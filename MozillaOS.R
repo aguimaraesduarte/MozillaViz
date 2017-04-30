@@ -22,6 +22,7 @@ server <- function(input, output, session) {
   os2 <- subset(os2, sd == "2016-09")
   os2$path_str <- paste(paste("World", os2$country, os2$city, os2$os, os2$os_version, sep = "/"))
   os2$path <- strsplit(os2$path_str, "/")
+  os2$cnt <- round(os2$cnt/sum(os2$cnt)*100, 3)
   
   output$circleTreeMap <- renderD3partitionR({
     D3partitionR(data=list(path=os2$path, value=os2$cnt),
