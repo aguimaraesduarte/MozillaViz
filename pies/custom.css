@@ -1,7 +1,7 @@
 #map{
   /*z-index: -1;*/
   /* shiny doesn't like this absolute definition */
-  height: 600px;
+  height: 100%;
   position:absolute;
   top:0; right:0;
   bottom:0; left:0;
@@ -24,6 +24,7 @@ div.tooltip {
   border: 0px;
   border-radius: 8px;
   pointer-events: none;
+  font: 15px sans-serif;
 }
 
 .ticks {

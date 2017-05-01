@@ -8,26 +8,66 @@
 #
 
 library(shiny)
+library(D3partitionR)
+library(jsonlite)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  titlePanel("Included Content"),
-  mainPanel(
-    includeHTML("index.html")
+  
+  navbarPage("MozillaViz",
+             tabPanel("Firefox Versions Map", includeHTML("index.html")),
+             navbarMenu("Firefox OS Maps",
+                        tabPanel("Circle Tree Map", D3partitionROutput("circleTreeMap", width = "100%")),
+                        tabPanel("Sunburst", D3partitionROutput("sunburst", width = "100%")),
+                        tabPanel("Partition Chart", D3partitionROutput("partitionChart", width = "100%")),
+                        tabPanel("Tree Map", D3partitionROutput("treeMap", width = "100%")),
+                        tabPanel("Collapsible Tree", D3partitionROutput("collapsibleTree", width = "100%"))
+             ),
+             footer = "Built by Connor Ameres, Andre Duarte",
+             inverse = T
   )
+  
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
    
-   output$distPlot <- renderPlot({
-      # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
-   })
+  os2 <- fromJSON("os2.json", simplifyDataFrame = T)
+  os2 <- subset(os2, sd == "2016-09")
+  os2$path_str <- paste(paste("World", os2$country, os2$city, os2$os, os2$os_version, sep = "/"))
+  os2$path <- strsplit(os2$path_str, "/")
+  os2$cnt <- round(os2$cnt/sum(os2$cnt)*100, 3)
+  
+  output$circleTreeMap <- renderD3partitionR({
+    D3partitionR(data=list(path=os2$path, value=os2$cnt),
+                 type = "circleTreeMap",
+                 trail = T)
+  })
+  
+  output$partitionChart <- renderD3partitionR({
+    D3partitionR(data=list(path=os2$path, value=os2$cnt),
+                 type = "partitionChart",
+                 trail = T)
+  })
+  
+  output$treeMap <- renderD3partitionR({
+    D3partitionR(data=list(path=os2$path, value=os2$cnt),
+                 type = "treeMap",
+                 trail = T)
+  })
+  
+  output$sunburst <- renderD3partitionR({
+    D3partitionR(data=list(path=os2$path, value=os2$cnt),
+                 type = "sunburst",
+                 trail = T)
+  })
+  
+  output$collapsibleTree <- renderD3partitionR({
+    D3partitionR(data=list(path=os2$path, value=os2$cnt),
+                 type = "collapsibleTree",
+                 trail = T,
+                 specificOptions = list(bar=T))
+  })
 }
 
 addResourcePath('static', '.')
