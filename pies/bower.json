@@ -1,0 +1,23 @@
+{
+  "name": "visualization-frontend",
+  "authors": [
+    "Connor Ameres <connorameres@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "^4.8.0",
+    "lodash": "^4.17.4",
+    "leaflet": "0.7.7",
+    "jquery": "^3.2.1"
+  }
+}
